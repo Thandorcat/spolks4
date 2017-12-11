@@ -59,6 +59,10 @@ def child_process(process_id, server, mutex, process_queue):
         handle_client(client_obj)
         print("[*] Connection with: %s:%d closed by process %d" % (client_ip, client_port, process_id))
 
+        if process_queue.qsize() > NUM_OF_PROCESSES:
+            print("[*] Too many free processes,so %d kills itself" % (process_id))
+            exit(0)
+
 
 def handle_client(client):
     while True:
@@ -262,5 +266,5 @@ if __name__ == '__main__':
         if (process_queue.empty()):
             client_handle = Process(target=child_process, args=(num_of_processes, server, mutex, process_queue))
             client_handle.start()
-            print("New process number %d has been created" % (num_of_processes))
+            print("[*] New process number %d has been created" % (num_of_processes))
             num_of_processes += 1
